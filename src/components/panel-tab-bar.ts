@@ -301,14 +301,34 @@ export class PanelTabBar extends LitElement {
     return html`
       <div
         class="tab ${isActive ? "active" : ""} ${tab.pinned ? "pinned" : ""}"
+        role="tab"
+        aria-selected=${isActive ? "true" : "false"}
+        tabindex=${isActive ? "0" : "-1"}
         data-tab-id="${tab.id}"
         @click=${() => this._onTabClick(tab)}
+        @keydown=${(e: KeyboardEvent) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            this._onTabClick(tab);
+          }
+        }}
         title=${tab.title}
       >
-        ${tab.icon ? html`<span>${tab.icon}</span>` : ""}
+        ${tab.icon ? html`<span aria-hidden="true">${tab.icon}</span>` : ""}
         <span>${tab.title}</span>
-        ${tab.dirty ? html`<span class="dirty-dot"></span>` : ""}
-        ${!tab.pinned ? html`<span class="tab-close" @click=${(e: Event) => this._onTabClose(e, tab)}>✕</span>` : ""}
+        ${tab.dirty ? html`<span class="dirty-dot" aria-label="unsaved changes"></span>` : ""}
+        ${!tab.pinned
+          ? html`
+              <span
+                class="tab-close"
+                role="button"
+                aria-label="Close ${tab.title}"
+                tabindex="-1"
+                @click=${(e: Event) => this._onTabClose(e, tab)}
+                >✕</span
+              >
+            `
+          : ""}
       </div>
     `;
   }
@@ -317,7 +337,7 @@ export class PanelTabBar extends LitElement {
     const hiddenTabs = this.tabs.filter(t => this.hiddenTabIds.has(t.id));
 
     return html`
-      <div class="tab-scroll-region">${this.tabs.map(t => this._renderTab(t))}</div>
+      <div class="tab-scroll-region" role="tablist" aria-label="Panel tabs">${this.tabs.map(t => this._renderTab(t))}</div>
 
       ${this.overflowCount > 0
         ? html`

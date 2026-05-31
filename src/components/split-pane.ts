@@ -638,8 +638,6 @@ export class SplitPane extends LitElement {
     const dividerClass = isH ? "divider-h" : "divider-v";
     const containerClass = isH ? "split-h" : "split-v";
 
-    // CHANGED: build visible index list first — hidden nodes and their
-    // adjacent dividers are skipped entirely (zero footprint).
     const visibleIndices = node.children
       .map((c, i) => ({ c, i }))
       .filter(({ c }) => c.visible !== false)
@@ -650,9 +648,6 @@ export class SplitPane extends LitElement {
       const style = this.computeChildStyle(node, i);
       const isLastVisible = position === visibleIndices.length - 1;
 
-      // For divider collapse state: look at the raw children on either side
-      // of this divider slot (original indices i and i+1) — but only render
-      // a divider when the *next visible* sibling exists.
       const nextVisibleIndex = visibleIndices[position + 1];
       const dividerHasCollapsed =
         !isLastVisible &&
@@ -661,16 +656,27 @@ export class SplitPane extends LitElement {
             node.children[nextVisibleIndex]?.type === "panel-host" &&
             (node.children[nextVisibleIndex] as PanelHostNode).collapsed));
 
-      // Collapse button: use the original index i as the dividerIndex so
-      // getCollapsibleSide still works against the full children array.
-      // We pass i here because the divider logically sits after child[i].
       const side = !isLastVisible ? this.getCollapsibleSide(node, i) : null;
       const canCollapse = side !== null;
+
+      // ARIA: compute size percentage for aria-valuenow
+      const expandedTotal = node.children.reduce((sum, c, idx) => {
+        if (c.visible === false || (c.type === "panel-host" && c.collapsed)) return sum;
+        return sum + (node.sizes[idx] ?? 0);
+      }, 0);
+      const currentSize = node.sizes[i] ?? 0;
+      const valuenow = expandedTotal > 0 ? Math.round((currentSize / expandedTotal) * 100) : 0;
 
       const divider = !isLastVisible
         ? html`
             <div
               class="${dividerClass} ${this.draggingIndex === i ? "dragging" : ""}"
+              role="separator"
+              aria-orientation=${isH ? "vertical" : "horizontal"}
+              aria-valuenow=${valuenow}
+              aria-valuemin="5"
+              aria-valuemax="95"
+              aria-label=${isH ? "Vertical divider" : "Horizontal divider"}
               @mousedown=${(e: MouseEvent) => this.onDividerMouseDown(e, i)}
               @dblclick=${(e: MouseEvent) => this.onDividerDblClick(e, i)}
             >

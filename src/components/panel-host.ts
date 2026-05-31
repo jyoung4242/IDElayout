@@ -5,6 +5,50 @@ import type { PanelHostNode, PanelTabNode } from "../types/layout";
 import { componentRegistry } from "../registry";
 import "./panel-tab-bar";
 
+// ── MountDirective ────────────────────────────────────────────────────────────
+
+import { directive, Directive } from "lit/directive.js";
+import type { ElementPart, PartInfo } from "lit/directive.js";
+
+class MountDirective extends Directive {
+  private _el: HTMLElement | null = null;
+  private _lastProps: Record<string, unknown> | undefined = undefined;
+
+  constructor(partInfo: PartInfo) {
+    super(partInfo);
+  }
+
+  override update(part: ElementPart, [el, props]: [HTMLElement, Record<string, unknown> | undefined]) {
+    if (this._el !== el) {
+      part.element.innerHTML = "";
+      part.element.appendChild(el);
+      this._el = el;
+      this._lastProps = undefined;
+    }
+
+    if (props && !shallowEqual(props, this._lastProps)) {
+      Object.assign(el, props);
+      this._lastProps = { ...props };
+    }
+  }
+
+  override render(_el: HTMLElement, _props?: Record<string, unknown>): string {
+    return "";
+  }
+}
+
+function shallowEqual(a: Record<string, unknown>, b: Record<string, unknown> | undefined): boolean {
+  if (!b) return false;
+  const aKeys = Object.keys(a);
+  const bKeys = Object.keys(b);
+  if (aKeys.length !== bKeys.length) return false;
+  return aKeys.every(k => a[k] === b[k]);
+}
+
+const mountElement = directive(MountDirective);
+
+// ── PanelHost ─────────────────────────────────────────────────────────────────
+
 @customElement("panel-host")
 export class PanelHost extends LitElement {
   static styles = [
@@ -62,13 +106,11 @@ export class PanelHost extends LitElement {
         cursor: pointer;
         user-select: none;
       }
-      /* Horizontal strip (parent is vertical split — collapsed panel is full-width, short) */
       .collapsed-strip.horizontal {
         flex-direction: row;
         padding: 0 6px;
         height: 100%;
       }
-      /* Vertical strip (parent is horizontal split — collapsed panel is full-height, narrow) */
       .collapsed-strip.vertical {
         flex-direction: column-reverse;
         padding: 6px 0;
@@ -91,7 +133,6 @@ export class PanelHost extends LitElement {
         text-overflow: ellipsis;
         flex: 1;
       }
-      /* Rotate title only for vertical strips (narrow column) */
       .collapsed-strip.vertical .collapsed-title {
         writing-mode: vertical-rl;
         text-orientation: mixed;
@@ -128,6 +169,11 @@ export class PanelHost extends LitElement {
 
   @property({ type: Object }) node!: PanelHostNode;
   @property({ type: String }) orientation: "horizontal" | "vertical" = "horizontal";
+  // After the @property declarations, add:
+  override connectedCallback() {
+    super.connectedCallback();
+    this.setAttribute("role", "region");
+  }
 
   private contentCache = new Map<string, HTMLElement>();
 
@@ -149,10 +195,7 @@ export class PanelHost extends LitElement {
     this.pruneCache();
 
     const cached = this.contentCache.get(tab.componentTag);
-    if (cached) {
-      if (tab.componentProps) Object.assign(cached, tab.componentProps);
-      return cached;
-    }
+    if (cached) return cached; // props applied by MountDirective
 
     const el = componentRegistry.create(tab.componentTag, tab.componentProps ?? {});
     if (!el) return null;
@@ -197,8 +240,6 @@ export class PanelHost extends LitElement {
 
     const stripClass = this.orientation === "horizontal" ? "vertical" : "horizontal";
 
-    // For vertical strips (horizontal split), flip rotation based on collapse direction.
-    // collapseToward "end" (right/bottom) needs the opposite rotation from "start" (left/top).
     const titleStyle =
       this.orientation === "horizontal" && this.node.collapseToward === "end"
         ? "writing-mode: vertical-rl; text-orientation: mixed; transform: none;"
@@ -221,12 +262,12 @@ export class PanelHost extends LitElement {
     const tab = this.activeTab;
 
     if (!tab?.componentTag) {
-      return html`<div class="no-content">Empty panel</div>`;
+      return html`<div class="no-content" role="tabpanel">Empty panel</div>`;
     }
 
     if (!componentRegistry.has(tab.componentTag)) {
       return html`
-        <div class="unregistered">
+        <div class="unregistered" role="tabpanel">
           <span>Unregistered component</span>
           <code>${tab.componentTag}</code>
         </div>
@@ -234,13 +275,25 @@ export class PanelHost extends LitElement {
     }
 
     const el = this.resolveContent();
-    if (!el) return html`<div class="no-content">Failed to create component</div>`;
+    if (!el) return html`<div class="no-content" role="tabpanel">Failed to create component</div>`;
 
-    return html` <div class="content" style="flex:1;min-height:0;display:flex;flex-direction:column;" ${refCallback(el)}></div> `;
+    return html`
+      <div
+        class="content"
+        role="tabpanel"
+        aria-label=${tab.title}
+        style="flex:1;min-height:0;display:flex;flex-direction:column;"
+        ${mountElement(el, tab.componentProps)}
+      ></div>
+    `;
   }
 
   render() {
     if (!this.node) return html``;
+
+    // Keep host aria-label in sync with active tab
+    const label = this.activeTab?.title ?? "Panel";
+    this.setAttribute("aria-label", label);
 
     if (this.node.collapsed) {
       return this.renderCollapsed();
@@ -257,26 +310,3 @@ export class PanelHost extends LitElement {
     `;
   }
 }
-
-// ── MountDirective ────────────────────────────────────────────────────────────
-
-import { directive, Directive } from "lit/directive.js";
-import type { ElementPart } from "lit";
-
-class MountDirective extends Directive {
-  private el: HTMLElement | null = null;
-
-  override update(part: ElementPart, [el]: [HTMLElement]) {
-    if (this.el !== el) {
-      part.element.innerHTML = "";
-      part.element.appendChild(el);
-      this.el = el;
-    }
-  }
-
-  render() {
-    return "";
-  }
-}
-
-const refCallback = directive(MountDirective);

@@ -1,5 +1,7 @@
 import { LitElement, html, css } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
+import { ContextConsumer } from "@lit/context"; // ADD
+import { playStateContext } from "../context/play-state"; // ADD
 import { sharedStyles } from "../styles/shared";
 
 @customElement("editor-status")
@@ -63,35 +65,35 @@ export class EditorStatus extends LitElement {
   @state() private warnings = 2;
   @state() private cursorLine = 22;
   @state() private cursorCol = 2;
-  @state() private running = false;
   @property({ type: String }) saveStatus: "idle" | "saved" | "error" = "idle";
   @property({ type: Number }) lastSavedAt: number | null = null;
+
+  // ── Play state via context ────────────────────────────────────────
+  private _playState = new ContextConsumer(this, {
+    context: playStateContext,
+    subscribe: true, // re-render whenever provider calls setValue()
+  });
+
+  private get running(): boolean {
+    return this._playState.value?.running ?? false;
+  }
 
   private fpsInterval?: ReturnType<typeof setInterval>;
 
   override connectedCallback() {
     super.connectedCallback();
-
     this.fpsInterval = setInterval(() => {
       if (this.running) {
         this.fps = 58 + Math.round(Math.random() * 4);
       }
     }, 800);
-
-    // Listen for play state from editor-header bubbling through the DOM
-    this.getRootNode()?.addEventListener?.("play-state-change", this.onPlayStateChange as EventListener);
+    // getRootNode() listener is gone — context handles it
   }
 
   override disconnectedCallback() {
     super.disconnectedCallback();
     clearInterval(this.fpsInterval);
-    this.getRootNode()?.removeEventListener?.("play-state-change", this.onPlayStateChange as EventListener);
   }
-
-  private onPlayStateChange = (e: CustomEvent<{ running: boolean }>) => {
-    this.running = e.detail.running;
-    if (!this.running) this.fps = 60;
-  };
 
   private get savedLabel(): string {
     if (!this.lastSavedAt) return "";
@@ -104,7 +106,6 @@ export class EditorStatus extends LitElement {
 
   render() {
     return html`
-      <!-- Left region: source control + diagnostics -->
       <div class="item" title="Source branch">⎇ ${this.branch}</div>
       ${this.lastSavedAt
         ? html`
@@ -118,20 +119,13 @@ export class EditorStatus extends LitElement {
       <div class="item ${this.warnings > 0 ? "warn" : ""}" title="${this.warnings} warnings">⚠ ${this.warnings}</div>
 
       <div class="sep"></div>
-
       <div class="item" title="Renderer">⬡ WebGL2</div>
-
       <div class="spacer"></div>
 
-      <!-- Right region: runtime + position -->
       <div class="item fps" title="Frames per second">◈ ${this.fps} fps</div>
-
       <div class="sep"></div>
-
       <div class="item" title="ExcaliburJS version">ExcaliburJS 0.30</div>
-
       <div class="sep"></div>
-
       <div class="item" title="Cursor position">Ln ${this.cursorLine}, Col ${this.cursorCol}</div>
     `;
   }
