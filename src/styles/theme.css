@@ -1,0 +1,29 @@
+@import "tailwindcss";
+
+:root {
+  --editor-bg: #1a1b1e;
+  --editor-bg2: #16171a;
+  --editor-bg3: #0f1012;
+  --editor-surface: #212226;
+  --editor-surface2: #2a2b30;
+  --editor-surface3: #323339;
+  --editor-border: rgba(255, 255, 255, 0.08);
+  --editor-border2: rgba(255, 255, 255, 0.14);
+  --editor-text: #e8e9ec;
+  --editor-text2: #9a9ba5;
+  --editor-text3: #5a5b66;
+  --editor-accent: #7c6af7;
+  --editor-accent2: #5a4fd4;
+  --editor-divider: 4px;
+  --editor-tab-h: 32px;
+  --editor-header-h: 40px;
+  --editor-status-h: 24px;
+}
+
+body {
+  background: var(--editor-bg3);
+  color: var(--editor-text);
+  font-family: "JetBrains Mono", "Fira Code", ui-monospace, monospace;
+  overflow: hidden;
+  margin: 0;
+}
