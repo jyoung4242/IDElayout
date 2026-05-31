@@ -291,6 +291,7 @@ import { sharedStyles } from "../styles/shared";
 import type { WorkspaceLayout, PanelHostNode } from "../types/layout";
 import { collectPanelHosts } from "../utils/layout-utils";
 import { componentRegistry } from "../registry/component-registry";
+import { themeManager, THEMES, type ThemeId } from "../persistence";
 
 @customElement("editor-header")
 export class EditorHeader extends LitElement {
@@ -539,6 +540,8 @@ export class EditorHeader extends LitElement {
   @state() private running = false;
   @state() private fileMenuOpen = false;
   @state() private viewMenuOpen = false;
+  @state() private themeMenuOpen = false;
+  @state() private activeTheme: ThemeId = themeManager.active;
 
   // ── Menu helpers ─────────────────────────────────────────────────
 
@@ -546,6 +549,9 @@ export class EditorHeader extends LitElement {
   override connectedCallback() {
     super.connectedCallback();
     window.addEventListener("pointerdown", this.onOutsideClick);
+    window.addEventListener("theme-change", (e: Event) => {
+      this.activeTheme = (e as CustomEvent<ThemeId>).detail;
+    });
   }
 
   override disconnectedCallback() {
@@ -695,6 +701,36 @@ export class EditorHeader extends LitElement {
     `;
   }
 
+  private _renderThemeMenu() {
+    if (!this.themeMenuOpen) return html``;
+    return html`
+      <div class="dropdown" style="min-width:140px;">
+        ${THEMES.map(
+          t => html`
+            <div
+              class="dropdown-item"
+              @click=${() => {
+                themeManager.apply(t.id);
+                this.themeMenuOpen = false;
+              }}
+            >
+              <span>${t.label}</span>
+              ${t.id === this.activeTheme ? html`<span class="shortcut">✓</span>` : ""}
+            </div>
+          `,
+        )}
+      </div>
+    `;
+  }
+
+  private toggleThemeMenu() {
+    this.themeMenuOpen = !this.themeMenuOpen;
+    if (this.themeMenuOpen) {
+      this.fileMenuOpen = false;
+      this.viewMenuOpen = false;
+    }
+  }
+
   // ── Root render ───────────────────────────────────────────────────
 
   override render() {
@@ -716,6 +752,11 @@ export class EditorHeader extends LitElement {
       <div style="position:relative;">
         <button class="menu-btn ${this.viewMenuOpen ? "open" : ""}" @click=${this.toggleViewMenu}>View</button>
         ${this.renderViewMenu()}
+      </div>
+
+      <div style="position:relative;">
+        <button class="menu-btn ${this.themeMenuOpen ? "open" : ""}" @click=${this.toggleThemeMenu}>Theme</button>
+        ${this._renderThemeMenu()}
       </div>
 
       <button class="menu-btn">Scene</button>
