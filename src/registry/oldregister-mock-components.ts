@@ -14,7 +14,7 @@ componentRegistry.register({
     category: "viewport",
     description: "Fake scene viewport for layout testing",
   },
-  alwaysVisibile: true,
+  alwaysVisible: true,
 });
 
 componentRegistry.register({

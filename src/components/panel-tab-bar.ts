@@ -172,8 +172,8 @@ export class PanelTabBar extends LitElement {
   @state() private overflowOpen = false;
   @state() private overflowCount = 0;
   @state() private hiddenTabIds = new Set<string>();
-  @state() private menuX = 0;
-  @state() private menuY = 0;
+  // @state() private menuX = 0;
+  // @state() private menuY = 0;
 
   private scrollRegion: HTMLElement | null = null;
   private ro: ResizeObserver | null = null;
@@ -269,17 +269,18 @@ export class PanelTabBar extends LitElement {
     this.dispatchEvent(new CustomEvent("tab-change", { detail: tab.id, bubbles: true, composed: true }));
   }
 
-  private _onTabClose(e: Event, tab: PanelTabNode) {
-    e.stopPropagation();
-    this.dispatchEvent(new CustomEvent("tab-close", { detail: tab.id, bubbles: true, composed: true }));
-  }
+  // private _onTabClose(e: Event, tab: PanelTabNode) {
+  //   e.stopPropagation();
+  //   this.dispatchEvent(new CustomEvent("tab-close", { detail: tab.id, bubbles: true, composed: true }));
+  // }
 
-  private _toggleOverflow(e: MouseEvent) {
+  private _toggleOverflow() {
+    //e: MouseEvent
     this.overflowOpen = !this.overflowOpen;
     if (this.overflowOpen) {
-      const btn = (e.currentTarget as HTMLElement).getBoundingClientRect();
-      this.menuX = btn.right;
-      this.menuY = btn.bottom;
+      // const btn = (e.currentTarget as HTMLElement).getBoundingClientRect();
+      // this.menuX = btn.right;
+      // this.menuY = btn.bottom;
       window.addEventListener("pointerdown", this.boundClickOutside, true);
     } else {
       window.removeEventListener("pointerdown", this.boundClickOutside, true);

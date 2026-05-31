@@ -11,7 +11,7 @@ export const defaultLayout: WorkspaceLayout = {
       {
         id: "left",
         type: "panel-host",
-        tabs: [{ id: "scene-tree", title: "Scene", icon: "🌲", pinned: true, componentTag: "mock-tree" }],
+        tabs: [{ id: "scene-tree", title: "Scene", icon: "🌲", componentTag: "mock-tree" }],
         activeTabId: "scene-tree",
         collapsible: true,
         collapseToward: "start",
@@ -25,7 +25,7 @@ export const defaultLayout: WorkspaceLayout = {
           {
             id: "center-top",
             type: "panel-host",
-            tabs: [{ id: "viewport", title: "Viewport", icon: "🎮", pinned: true, componentTag: "mock-viewport" }],
+            tabs: [{ id: "viewport", title: "Viewport", icon: "🎮", componentTag: "mock-viewport" }],
             activeTabId: "viewport",
             collapsible: false,
           },
@@ -45,7 +45,7 @@ export const defaultLayout: WorkspaceLayout = {
       {
         id: "right",
         type: "panel-host",
-        tabs: [{ id: "inspector", title: "Inspector", icon: "🔧", pinned: true, componentTag: "mock-tree" }],
+        tabs: [{ id: "inspector", title: "Inspector", icon: "🔧", componentTag: "mock-tree" }],
         activeTabId: "inspector",
         collapsible: true,
         collapseToward: "end",

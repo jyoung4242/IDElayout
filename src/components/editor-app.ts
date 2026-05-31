@@ -2,7 +2,6 @@ import { LitElement, html, css } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { ContextProvider } from "@lit/context"; // ADD
 import { playStateContext } from "../context/play-state"; // ADD
-import type { PlayState } from "../context/play-state"; // ADD
 import { sharedStyles } from "../styles/shared";
 import type { WorkspaceLayout, LayoutNode } from "../types/layout";
 import { defaultLayout } from "../mock/default-layout";

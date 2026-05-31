@@ -22,14 +22,17 @@ export class MockShaderPreview extends LitElement {
       align-items: center;
       gap: 8px;
       padding: 4px 10px;
-      background: rgba(0,0,0,0.6);
+      background: rgba(0, 0, 0, 0.6);
       border-bottom: 1px solid var(--editor-border);
       flex-shrink: 0;
       position: relative;
       z-index: 1;
     }
 
-    .sp-label { color: var(--editor-text2); font-size: 11px; }
+    .sp-label {
+      color: var(--editor-text2);
+      font-size: 11px;
+    }
     .sp-badge {
       font-size: 9px;
       padding: 1px 5px;
@@ -40,8 +43,8 @@ export class MockShaderPreview extends LitElement {
     }
 
     .sp-btn {
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.15);
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
       color: #ccc;
       border-radius: 3px;
       padding: 2px 8px;
@@ -50,8 +53,15 @@ export class MockShaderPreview extends LitElement {
       font-family: monospace;
     }
 
-    .sp-btn:hover { background: rgba(255,255,255,0.15); color: #fff; }
-    .sp-btn.active { background: var(--editor-accent); color: var(--editor-bg); border-color: var(--editor-accent); }
+    .sp-btn:hover {
+      background: rgba(255, 255, 255, 0.15);
+      color: #fff;
+    }
+    .sp-btn.active {
+      background: var(--editor-accent);
+      color: var(--editor-bg);
+      border-color: var(--editor-accent);
+    }
 
     .canvas-area {
       flex: 1;
@@ -69,22 +79,22 @@ export class MockShaderPreview extends LitElement {
     }
 
     @keyframes gradientShift {
-      0%   { background-position: 0% 50%; }
-      50%  { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
+      0% {
+        background-position: 0% 50%;
+      }
+      50% {
+        background-position: 100% 50%;
+      }
+      100% {
+        background-position: 0% 50%;
+      }
     }
 
     /* Scanlines overlay */
     .scanlines {
       position: absolute;
       inset: 0;
-      background: repeating-linear-gradient(
-        0deg,
-        transparent,
-        transparent 2px,
-        rgba(0,0,0,0.08) 2px,
-        rgba(0,0,0,0.08) 4px
-      );
+      background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 0, 0, 0.08) 2px, rgba(0, 0, 0, 0.08) 4px);
       pointer-events: none;
     }
 
@@ -98,41 +108,77 @@ export class MockShaderPreview extends LitElement {
     }
 
     .orb-1 {
-      width: 200px; height: 200px;
+      width: 200px;
+      height: 200px;
       background: #4466ff;
       animation: orbit1 7s ease-in-out infinite;
     }
 
     .orb-2 {
-      width: 160px; height: 160px;
+      width: 160px;
+      height: 160px;
       background: #aa44ff;
       animation: orbit2 5s ease-in-out infinite;
     }
 
     .orb-3 {
-      width: 120px; height: 120px;
+      width: 120px;
+      height: 120px;
       background: #00ffcc;
       animation: orbit3 9s ease-in-out infinite;
     }
 
     @keyframes orbit1 {
-      0%   { top: 20%; left: 10%; }
-      33%  { top: 60%; left: 70%; }
-      66%  { top: 10%; left: 50%; }
-      100% { top: 20%; left: 10%; }
+      0% {
+        top: 20%;
+        left: 10%;
+      }
+      33% {
+        top: 60%;
+        left: 70%;
+      }
+      66% {
+        top: 10%;
+        left: 50%;
+      }
+      100% {
+        top: 20%;
+        left: 10%;
+      }
     }
 
     @keyframes orbit2 {
-      0%   { top: 50%; left: 60%; }
-      50%  { top: 20%; left: 20%; }
-      100% { top: 50%; left: 60%; }
+      0% {
+        top: 50%;
+        left: 60%;
+      }
+      50% {
+        top: 20%;
+        left: 20%;
+      }
+      100% {
+        top: 50%;
+        left: 60%;
+      }
     }
 
     @keyframes orbit3 {
-      0%   { top: 70%; left: 30%; }
-      33%  { top: 30%; left: 80%; }
-      66%  { top: 80%; left: 60%; }
-      100% { top: 70%; left: 30%; }
+      0% {
+        top: 70%;
+        left: 30%;
+      }
+      33% {
+        top: 30%;
+        left: 80%;
+      }
+      66% {
+        top: 80%;
+        left: 60%;
+      }
+      100% {
+        top: 70%;
+        left: 30%;
+      }
     }
 
     /* Grid overlay (UV debug lines) */
@@ -140,12 +186,14 @@ export class MockShaderPreview extends LitElement {
       position: absolute;
       inset: 0;
       background-image:
-        linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+        linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
       background-size: 32px 32px;
     }
 
-    .uv-grid.hidden { display: none; }
+    .uv-grid.hidden {
+      display: none;
+    }
 
     /* HUD overlay */
     .hud {
@@ -154,14 +202,16 @@ export class MockShaderPreview extends LitElement {
       left: 0;
       right: 0;
       padding: 6px 10px;
-      background: rgba(0,0,0,0.5);
+      background: rgba(0, 0, 0, 0.5);
       display: flex;
       gap: 16px;
       font-size: 10px;
-      color: rgba(255,255,255,0.5);
+      color: rgba(255, 255, 255, 0.5);
     }
 
-    .hud-val { color: var(--editor-accent); }
+    .hud-val {
+      color: var(--editor-accent);
+    }
 
     .mode-overlay {
       position: absolute;
@@ -169,17 +219,17 @@ export class MockShaderPreview extends LitElement {
       right: 8px;
       font-size: 10px;
       padding: 2px 6px;
-      background: rgba(0,0,0,0.5);
-      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 3px;
-      color: rgba(255,255,255,0.4);
+      color: rgba(255, 255, 255, 0.4);
     }
   `;
 
   private _showGrid = false;
   private _mode: "gradient" | "plasma" | "noise" = "gradient";
   private _paused = false;
-  private _time = 0;
+  // private _time = 0;
   private _rafId: number | null = null;
   private _tick = 0;
   private _intervalId: ReturnType<typeof setInterval> | null = null;
@@ -188,18 +238,33 @@ export class MockShaderPreview extends LitElement {
     super.connectedCallback();
     // Lightweight ticker for HUD display
     this._intervalId = setInterval(() => {
-      if (!this._paused) { this._tick++; this.requestUpdate(); }
+      if (!this._paused) {
+        this._tick++;
+        this.requestUpdate();
+      }
     }, 100);
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
-    if (this._intervalId !== null) { clearInterval(this._intervalId); this._intervalId = null; }
-    if (this._rafId !== null) { cancelAnimationFrame(this._rafId); this._rafId = null; }
+    if (this._intervalId !== null) {
+      clearInterval(this._intervalId);
+      this._intervalId = null;
+    }
+    if (this._rafId !== null) {
+      cancelAnimationFrame(this._rafId);
+      this._rafId = null;
+    }
   }
 
-  private _toggleGrid() { this._showGrid = !this._showGrid; this.requestUpdate(); }
-  private _togglePause() { this._paused = !this._paused; this.requestUpdate(); }
+  private _toggleGrid() {
+    this._showGrid = !this._showGrid;
+    this.requestUpdate();
+  }
+  private _togglePause() {
+    this._paused = !this._paused;
+    this.requestUpdate();
+  }
   private _cycleMode() {
     const modes: Array<"gradient" | "plasma" | "noise"> = ["gradient", "plasma", "noise"];
     const i = modes.indexOf(this._mode);
