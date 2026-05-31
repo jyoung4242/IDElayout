@@ -33,7 +33,6 @@ export interface PanelTabNode {
   title: string;
   icon?: string;
   closable?: boolean;
-  pinned?: boolean;
   dirty?: boolean;
   componentTag?: string;
   componentProps?: Record<string, unknown>;

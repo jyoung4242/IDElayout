@@ -1,46 +1,126 @@
 import { componentRegistry } from "./component-registry";
+
+// Existing mocks
 import "../mock/mock-viewport";
 import "../mock/mock-console";
 import "../mock/mock-tree";
 
+// New mocks
+import "../mock/mock-inspector";
+import "../mock/mock-asset-browser";
+import "../mock/mock-timeline";
+import "../mock/mock-shader-preview";
+import "../mock/mock-diagnostics";
+
+// ── Existing registrations ──────────────────────────────────────────────────
+
 componentRegistry.register({
   tag: "mock-viewport",
   factory: () => document.createElement("mock-viewport"),
-  defaultProps: {},
   collapsible: false,
+  alwaysVisible: false,
   meta: {
     title: "Viewport",
     icon: "🎮",
     category: "viewport",
-    description: "Fake scene viewport for layout testing",
+    description: "Fake scene canvas",
   },
-  alwaysVisibile: true,
 });
 
 componentRegistry.register({
   tag: "mock-console",
   factory: () => document.createElement("mock-console"),
-  defaultProps: {},
-  collapsible: true,
-  defaultCollapseToward: "end",
+  collapsible: false,
+  alwaysVisible: false,
   meta: {
     title: "Console",
-    icon: "⬛",
+    icon: "💬",
     category: "console",
-    description: "Streaming fake log output",
+    description: "Fake log output",
   },
 });
 
 componentRegistry.register({
   tag: "mock-tree",
   factory: () => document.createElement("mock-tree"),
-  defaultProps: {},
   collapsible: true,
   defaultCollapseToward: "start",
+  alwaysVisible: false,
   meta: {
-    title: "Scene Tree",
+    title: "Scene",
     icon: "🌲",
     category: "scene",
-    description: "Fake hierarchical scene structure",
+    description: "Fake hierarchy tree",
+  },
+});
+
+// ── New registrations ───────────────────────────────────────────────────────
+
+componentRegistry.register({
+  tag: "mock-inspector",
+  factory: () => document.createElement("mock-inspector"),
+  defaultProps: { entityId: "entity-001" },
+  collapsible: false,
+  alwaysVisible: false,
+  meta: {
+    title: "Inspector",
+    icon: "⚙",
+    category: "inspector",
+    description: "Entity property editor",
+  },
+});
+
+componentRegistry.register({
+  tag: "mock-asset-browser",
+  factory: () => document.createElement("mock-asset-browser"),
+  defaultProps: { viewMode: "grid" },
+  collapsible: false,
+  alwaysVisible: false,
+  meta: {
+    title: "Assets",
+    icon: "🗂",
+    category: "asset",
+    description: "Game asset browser",
+  },
+});
+
+componentRegistry.register({
+  tag: "mock-timeline",
+  factory: () => document.createElement("mock-timeline"),
+  defaultProps: { frameCount: 64 },
+  collapsible: false,
+  alwaysVisible: false,
+  meta: {
+    title: "Timeline",
+    icon: "⏱",
+    category: "tool", // no "animation" category; "tool" is the closest fit
+    description: "Animation timeline editor",
+  },
+});
+
+componentRegistry.register({
+  tag: "mock-shader-preview",
+  factory: () => document.createElement("mock-shader-preview"),
+  collapsible: false,
+  alwaysVisible: false,
+  meta: {
+    title: "Shader Preview",
+    icon: "◈",
+    category: "viewport",
+    description: "Live shader preview panel",
+  },
+});
+
+componentRegistry.register({
+  tag: "mock-diagnostics",
+  factory: () => document.createElement("mock-diagnostics"),
+  defaultProps: { updateIntervalMs: 500 },
+  collapsible: false,
+  alwaysVisible: false,
+  meta: {
+    title: "Diagnostics",
+    icon: "📊",
+    category: "console", // output/profiler lives alongside console tooling
+    description: "Performance profiler",
   },
 });

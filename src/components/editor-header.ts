@@ -659,7 +659,7 @@ export class EditorHeader extends LitElement {
   private isPanelProtected(node: PanelHostNode): boolean {
     return node.tabs.some(tab => {
       if (!tab.componentTag) return false;
-      return componentRegistry.resolve(tab.componentTag)?.alwaysVisibile === true;
+      return componentRegistry.resolve(tab.componentTag)?.alwaysVisible === true;
     });
   }
   private renderViewMenu() {

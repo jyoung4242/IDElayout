@@ -491,19 +491,21 @@ export class SplitPane extends LitElement {
     const split = this.node as SplitNode;
     const isH = split.orientation === "horizontal";
     const delta = isH ? e.clientX - this.dragStart.x : e.clientY - this.dragStart.y;
-    const proportion = delta / this.containerSize;
-    const newSizes = [...this.dragStart.sizes];
-    const minSize = 0.05;
+
+    // Express delta as a fraction of container, then scale to the sizes pool
+    const totalSizes = this.dragStart.sizes.reduce((a, b) => a + b, 0);
+    const proportion = (delta / this.containerSize) * totalSizes; // ← scaled to size units
+    const minSize = totalSizes * 0.05; // ← 5% of pool, not 0.05 absolute
 
     const leftChild = split.children[index];
     const rightChild = split.children[index + 1];
-
-    // CHANGED: also block drag if either side is hidden
     if (leftChild.collapsed || rightChild.collapsed || leftChild.visible === false || rightChild.visible === false) return;
 
+    const newSizes = [...this.dragStart.sizes];
     newSizes[index] = Math.max(minSize, this.dragStart.sizes[index] + proportion);
     newSizes[index + 1] = Math.max(minSize, this.dragStart.sizes[index + 1] - proportion);
 
+    // Keep the pair's total constant
     const origTotal = this.dragStart.sizes[index] + this.dragStart.sizes[index + 1];
     const newTotal = newSizes[index] + newSizes[index + 1];
     newSizes[index] = (newSizes[index] / newTotal) * origTotal;

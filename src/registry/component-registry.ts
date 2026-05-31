@@ -8,7 +8,7 @@ export interface ComponentDefinition {
   collapsible?: boolean;
   defaultCollapseToward?: "start" | "end";
   meta: ComponentMeta;
-  alwaysVisibile?: boolean;
+  alwaysVisible?: boolean;
 }
 export interface ComponentMeta {
   title: string;
