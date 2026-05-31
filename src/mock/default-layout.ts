@@ -44,7 +44,7 @@ export const defaultLayout: WorkspaceLayout = {
         id: "center-column",
         type: "split",
         orientation: "vertical",
-        sizes: [70, 30],
+        sizes: [80, 30],
         minSizes: [20, 15],
         children: [
           {
