@@ -300,7 +300,7 @@ export class PanelTabBar extends LitElement {
     const isActive = tab.id === this.activeTabId;
     return html`
       <div
-        class="tab ${isActive ? "active" : ""} ${tab.pinned ? "pinned" : ""}"
+        class="tab ${isActive ? "active" : ""} "
         role="tab"
         aria-selected=${isActive ? "true" : "false"}
         tabindex=${isActive ? "0" : "-1"}
@@ -317,18 +317,6 @@ export class PanelTabBar extends LitElement {
         ${tab.icon ? html`<span aria-hidden="true">${tab.icon}</span>` : ""}
         <span>${tab.title}</span>
         ${tab.dirty ? html`<span class="dirty-dot" aria-label="unsaved changes"></span>` : ""}
-        ${!tab.pinned
-          ? html`
-              <span
-                class="tab-close"
-                role="button"
-                aria-label="Close ${tab.title}"
-                tabindex="-1"
-                @click=${(e: Event) => this._onTabClose(e, tab)}
-                >✕</span
-              >
-            `
-          : ""}
       </div>
     `;
   }
