@@ -273,7 +273,7 @@ export class EditorHeader extends LitElement {
   }
 
   private onOutsideClick = (e: PointerEvent) => {
-    if (!this.fileMenuOpen && !this.viewMenuOpen) return;
+    if (!this.fileMenuOpen && !this.viewMenuOpen && !this.themeMenuOpen) return;
     // composed path walks through shadow DOM boundaries
     const path = e.composedPath();
     if (!path.includes(this)) {
@@ -294,6 +294,7 @@ export class EditorHeader extends LitElement {
   private closeAllMenus() {
     this.fileMenuOpen = false;
     this.viewMenuOpen = false;
+    this.themeMenuOpen = false;
   }
 
   private emit(type: string) {
