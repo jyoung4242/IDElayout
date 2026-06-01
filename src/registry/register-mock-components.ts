@@ -11,6 +11,9 @@ import "../mock/mock-asset-browser";
 import "../mock/mock-timeline";
 import "../mock/mock-shader-preview";
 import "../mock/mock-diagnostics";
+import "../mock/mock-editor";
+import "../mock/mock-project";
+import "../mock/mock-level-editor";
 
 // ── Existing registrations ──────────────────────────────────────────────────
 
@@ -122,5 +125,44 @@ componentRegistry.register({
     icon: "📊",
     category: "console", // output/profiler lives alongside console tooling
     description: "Performance profiler",
+  },
+});
+
+componentRegistry.register({
+  tag: "mock-editor",
+  factory: () => document.createElement("mock-editor"),
+  collapsible: false,
+  alwaysVisible: false,
+  meta: {
+    title: "Code Editor",
+    icon: "📝",
+    category: "code",
+    description: "Fake code editor with syntax highlighting",
+  },
+});
+
+componentRegistry.register({
+  tag: "mock-project-config",
+  factory: () => document.createElement("mock-project-config"),
+  collapsible: false,
+  alwaysVisible: false,
+  meta: {
+    title: "Project Config",
+    icon: "⚙️",
+    category: "tool",
+    description: "Project settings and configuration",
+  },
+});
+
+componentRegistry.register({
+  tag: "mock-level-editor",
+  factory: () => document.createElement("mock-level-editor"),
+  collapsible: false,
+  alwaysVisible: false,
+  meta: {
+    title: "Level Editor",
+    icon: "🗺️",
+    category: "tool",
+    description: "Tile-based level placement canvas",
   },
 });
