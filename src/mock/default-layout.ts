@@ -12,6 +12,7 @@ export const defaultLayout: WorkspaceLayout = {
         id: "node-3r144s",
         type: "split",
         orientation: "horizontal",
+        collapsed: false,
         sizes: [1],
         children: [
           {

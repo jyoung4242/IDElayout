@@ -21,7 +21,7 @@ componentRegistry.register({
   tag: "mock-viewport",
   factory: () => document.createElement("mock-viewport"),
   collapsible: false,
-  alwaysVisible: false,
+  alwaysVisible: true,
   meta: {
     title: "Viewport",
     icon: "🎮",
